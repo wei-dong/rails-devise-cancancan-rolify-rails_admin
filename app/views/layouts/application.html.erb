@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DeviseCancancanRolify</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<p class="notice"><%= notice %></p>  <p class="alert"><%= alert %></p>
+<% if current_user %>
+    <%= link_to('sign_out', destroy_user_session_path, :method => :delete) %> |
+    <%= link_to('change passwd', edit_registration_path(:user)) %>
+<% else %>
+    <%= link_to('sing_up', new_registration_path(:user)) %> |
+    <%= link_to('sign_in', new_session_path(:user)) %>
+<% end %><span></span>
+
+<% if user_signed_in? %>
+    <p>The user is loged in.</p>
+    <% if can? :update, @post %>
+        <p>You can update.</p>
+    <% else %>
+        <p>You can not update</p>
+    <% end %>
+    <a href="/admin">admin</a>
+
+<% end %>
+
+
+<%= yield %>
+
+</body>
+</html>
