@@ -5,12 +5,19 @@ class Ability
     if user.blank?
       # not logged in
       basic_read_only
-      can :access, :rails_admin
     elsif user.has_role?(:admin)
     # admin
       can :manage, :all
     else
       can :read,Post
+      can :create,Post
+      can :update, Post do |post|
+        (post.user_id == user.id)
+      end
+
+      can :destroy, Post do |post|
+        (post.user_id == user.id)
+      end
 
     end
 

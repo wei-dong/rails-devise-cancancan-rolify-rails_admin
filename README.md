@@ -163,6 +163,74 @@ rescue_from CanCan::AccessDenied do |exception|
 end
 ```
 
+##限制只能管理自己的 post
+
+####增加關聯
+```
+rails g migration add_user_id_to_post user_id:integer
+rake db:migrate
+```
+
+>app/models/user.rb
+
+####has_many 
+```
+class User < ActiveRecord::Base
+...
+...
+  has_many :posts
+end
+```
+####belongs_to 
+```
+class Post < ActiveRecord::Base
+...
+...
+  belongs_to :author, class_name: "User", foreign_key: :user_id
+
+  def editable_by?(user)
+    user && user == author
+  end
+end
+```
+####belongs_to
+```
+class Post < ActiveRecord::Base
+	belongs_to :user
+end
+```
+####controller
+```
+  def new
+    @post = current_user.posts.build
+    respond_with(@post)
+  end
+
+  def edit
+    authorize! :update,@post
+  end
+
+  def create
+    @post = current_user.posts.build(post_params)
+    if @post.save
+      respond_with(@post)
+    else
+      render 'new'
+    end
+  end
+```
+####修改 cancan
+```
+   can :create,Post
+   can :update, Post do |post|
+        (post.user_id == user.id)
+   end
+
+   can :destroy, Post do |post|
+        (post.user_id == user.id)
+   end
+```
+
 ####參考
 >http://deveede.logdown.com/posts/206943-use-deviserolify-cancan-control-permissions
 >https://github.com/robertzhang/rails-devise-cancancan-rolify

@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :find_post, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_user! , except: [:index]
   authorize_resource
 
@@ -15,32 +15,39 @@ class PostsController < ApplicationController
   end
 
   def new
-    @post = Post.new
+    @post = current_user.posts.build
     respond_with(@post)
   end
 
   def edit
-    authorize! :update, @variable
+    authorize! :update,@post
   end
 
   def create
-    @post = Post.new(post_params)
-    @post.save
-    respond_with(@post)
+    @post = current_user.posts.build(post_params)
+    if @post.save
+      respond_with(@post)
+    else
+      render 'new'
+    end
   end
 
   def update
-    @post.update(post_params)
-    respond_with(@post)
+    if @post.update(post_params)
+      respond_with(@post)
+    else
+      render 'edit'
+    end
   end
 
   def destroy
     @post.destroy
     respond_with(@post)
+
   end
 
   private
-    def set_post
+    def find_post
       @post = Post.find(params[:id])
     end
 
