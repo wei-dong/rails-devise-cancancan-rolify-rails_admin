@@ -25,11 +25,11 @@ config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 ####登入登出
 ```
 <% if current_user %>
-  <%= link_to('退出', destroy_user_session_path, :method => :delete) %> |
-  <%= link_to('修改密码', edit_registration_path(:user)) %>
+  <%= link_to('sign_out', destroy_user_session_path, :method => :delete) %> |
+  <%= link_to('change password', edit_registration_path(:user)) %>
 <% else %>
-  <%= link_to('注册', new_registration_path(:user)) %> |
-  <%= link_to('登录', new_session_path(:user)) %>
+  <%= link_to('sing_up', new_registration_path(:user)) %> |
+  <%= link_to('sign_in', new_session_path(:user)) %>
 <% end %><span></span>
 ```
 ####產生 user
@@ -42,7 +42,7 @@ rake db:migrate
 ##cancanca-rolefy
 ####Gemfile
 ```
-gem 'cancan'
+gem 'cancancan'
 gem 'rolify'
 ```
 `bundle`
